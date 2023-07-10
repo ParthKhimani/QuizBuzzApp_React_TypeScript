@@ -34,6 +34,12 @@ const AdminDashboard = () => {
   const handleAddManager = () => {
     navigate("/admin-dashboard/add-manager");
   };
+  const handleAddEmployee = () => {
+    navigate("/admin-dashboard/add-employee");
+  };
+  const handleAddQuiz = () => {
+    navigate("/admin-dashboard/add-quiz");
+  };
 
   const fetchData = () => {
     fetch("http://localhost:3333/admin-dashboard/manager-data", {
@@ -49,6 +55,7 @@ const AdminDashboard = () => {
         }
       });
   };
+
   const handleDeleteManager = (event: React.MouseEvent<HTMLButtonElement>) => {
     const data = event.currentTarget.getAttribute("value");
     fetch("http://localhost:3333/admin-dashboard/delete-manager-data", {
@@ -60,10 +67,17 @@ const AdminDashboard = () => {
     })
       .then((response) => response.json())
       .then((result) => {
-        if (result.status == 200) {
+        if (result.status === "200") {
           fetchData();
         }
       });
+  };
+
+  const handleUpdateManager = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const data = event.currentTarget.getAttribute("value");
+    navigate("/admin-dashboard/update-manager", {
+      state: { managerData: data },
+    });
   };
 
   React.useEffect(() => {
@@ -93,7 +107,18 @@ const AdminDashboard = () => {
         >
           Add Manager
         </Button>
-        <Button variant="outlined" style={{ margin: "10px" }}>
+        <Button
+          variant="outlined"
+          style={{ margin: "10px" }}
+          onClick={handleAddEmployee}
+        >
+          Add Employee
+        </Button>
+        <Button
+          variant="outlined"
+          style={{ margin: "10px" }}
+          onClick={handleAddQuiz}
+        >
           Add Quiz
         </Button>
       </div>
@@ -116,7 +141,8 @@ const AdminDashboard = () => {
                     variant="outlined"
                     color="success"
                     style={{ marginRight: "10px" }}
-                    onClick={handleAddManager}
+                    onClick={handleUpdateManager}
+                    value={JSON.stringify(item)}
                   >
                     Update
                   </Button>

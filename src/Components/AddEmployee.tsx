@@ -16,7 +16,7 @@ import QuizIcon from "@mui/icons-material/Quiz";
 
 const defaultTheme = createTheme();
 
-const AddManager = () => {
+const AddEmployee = () => {
   const [data, setData] = React.useState<FormData>();
   const [technology, setTechnology] = React.useState("");
   const [error, setError] = React.useState<string>();
@@ -37,7 +37,7 @@ const AddManager = () => {
 
   React.useEffect(() => {
     if (data) {
-      fetch("http://localhost:3333/add-manager", {
+      fetch("http://localhost:3333/add-employee", {
         method: "POST",
         headers: {
           "Content-Type": "application/json;charset=utf-8",
@@ -52,11 +52,11 @@ const AddManager = () => {
               navigate("/admin-dashboard");
               break;
             case "400":
-              setError("Manager is already assigned to another technology !");
+              setError("Employee is already assigned to another technology !");
               break;
 
             case "402":
-              setError("Manager is already assigned to that technology once!");
+              setError("Employee is already assigned to that technology once!");
               break;
           }
         });
@@ -88,7 +88,7 @@ const AddManager = () => {
             }}
           >
             <Typography component="h1" variant="h5">
-              Add Manager
+              Add Employee
             </Typography>
             <Box
               component="form"
@@ -100,9 +100,9 @@ const AddManager = () => {
                 margin="normal"
                 required
                 fullWidth
-                id="manager"
-                label="Manager Email Id"
-                name="manager"
+                id="employee"
+                label="Employee Email Id"
+                name="employee"
                 autoFocus
               />
               <TextField
@@ -162,4 +162,4 @@ const AddManager = () => {
     </>
   );
 };
-export default AddManager;
+export default AddEmployee;
