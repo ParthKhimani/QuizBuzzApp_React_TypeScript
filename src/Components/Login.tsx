@@ -30,7 +30,7 @@ const Login: React.FC<LoginProps> = ({ role }) => {
   React.useEffect(() => {
     if (data) {
       //fetching admin-login API
-      if (role == "admin") {
+      if (role === "admin") {
         fetch("http://localhost:3333/admin-login", {
           method: "POST",
           headers: {
@@ -57,7 +57,7 @@ const Login: React.FC<LoginProps> = ({ role }) => {
           });
       }
       //fetching manager-login API
-      if (role == "manager") {
+      if (role === "manager") {
         fetch("http://localhost:3333/manager-login", {
           method: "POST",
           headers: {
@@ -84,32 +84,32 @@ const Login: React.FC<LoginProps> = ({ role }) => {
           });
       }
       //fetching employee-login API
-      // if (role == "manager") {
-      //   fetch("http://localhost:3333/employee-login", {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json;charset=utf-8",
-      //     },
-      //     body: JSON.stringify(Object.fromEntries(data)),
-      //   })
-      //     .then((response) => response.json())
-      //     .then((result) => {
-      //       setError("");
-      //       switch (result.status) {
-      //         case "303":
-      //           navigate("/employee-dashboard");
-      //           break;
+      if (role === "employee") {
+        fetch("http://localhost:3333/employee-login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json;charset=utf-8",
+          },
+          body: JSON.stringify(Object.fromEntries(data)),
+        })
+          .then((response) => response.json())
+          .then((result) => {
+            setError("");
+            switch (result.status) {
+              case "303":
+                navigate("/employee-dashboard");
+                break;
 
-      //         case "404":
-      //           setError("*Email id Not Registered as an employee!");
-      //           break;
+              case "404":
+                setError("*Email id Not Registered as an employee!");
+                break;
 
-      //         case "400":
-      //           setError("*Incorrect Password!");
-      //           break;
-      //       }
-      //     });
-      // }
+              case "400":
+                setError("*Incorrect Password!");
+                break;
+            }
+          });
+      }
     }
   }, [data]);
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
@@ -11,7 +11,6 @@ import {
   IconButton,
   InputLabel,
   MenuItem,
-  MenuPaper,
   Select,
   SelectChangeEvent,
   Snackbar,
@@ -25,6 +24,8 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import QuizIcon from "@mui/icons-material/Quiz";
+import { useDispatch } from "react-redux";
+import { QuizState, QuizActionTypes } from "../types";
 
 interface Option {
   id: number;
@@ -38,23 +39,62 @@ interface Question {
   answer: string;
 }
 
+interface Technology {
+  name: string;
+  managers: Manager[];
+  employees: Employee[];
+}
+
+interface Manager {
+  emailId: String;
+  password: String;
+  technology: Technology;
+}
+
+interface Employee {
+  emailId: string;
+  technology: Technology;
+}
+
+interface Quiz {
+  questions: Question[];
+  employee: string;
+}
+
 const AddQuiz: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [openSuccess, setOpenSuccess] = React.useState(false);
   const [openError, setOpenError] = React.useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState("");
   const [currentAnswer, setCurrentAnswer] = useState("");
   const [employee, setEmployee] = useState("");
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [quiz, setQuiz] = useState<Quiz[]>([]);
   const [options, setOptions] = useState<Option[]>([
     { id: 1, value: "" },
     { id: 2, value: "" },
     { id: 3, value: "" },
     { id: 4, value: "" },
   ]);
+
+  useEffect(() => {
+    fetch("http://localhost:3333/get-employees", {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.status === "200") {
+          setEmployees(result.employees);
+        }
+      });
+  }, []);
+
   const handleLogout = () => {
     navigate("/");
   };
+
   const handleQuestionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCurrentQuestion(event.target.value);
   };
@@ -105,6 +145,7 @@ const AddQuiz: React.FC = () => {
     }
     setOpenSuccess(false);
   };
+
   const handleCloseError = (
     event?: React.SyntheticEvent | Event,
     reason?: string
@@ -114,14 +155,17 @@ const AddQuiz: React.FC = () => {
     }
     setOpenError(false);
   };
+
   const handleAnswerSelection = (event: SelectChangeEvent) => {
     const answer = event.target.value;
     setCurrentAnswer(answer as string);
   };
 
   const handleSaveQuiz = () => {
-    console.log(questions);
+    setQuiz((prevQuiz) => [...prevQuiz, { questions, employee }]);
+    dispatch({ type: QuizActionTypes.ADD_QUIZ, payload: quiz });
   };
+
   const handleDeleteQuestion = (questionId: number) => {
     console.log(questionId);
     const updatedQuestions = questions.filter(
@@ -134,9 +178,13 @@ const AddQuiz: React.FC = () => {
       }))
     );
   };
+
   const handleClearQuiz = () => {
+    setQuiz([]);
     setQuestions([]);
+    setEmployee("");
   };
+
   const handleEmployeeChange = (event: SelectChangeEvent) => {
     const employee = event.target.value;
     setEmployee(employee as string);
@@ -280,10 +328,13 @@ const AddQuiz: React.FC = () => {
               name="employee"
               onChange={handleEmployeeChange}
             >
-              <MenuItem value={"1"}>1</MenuItem>
-              <MenuItem value={"2"}>2</MenuItem>
-              <MenuItem value={"3"}>3</MenuItem>
-              <MenuItem value={"4"}>4</MenuItem>
+              {employees.map((employee) => (
+                <MenuItem value={employee.emailId}>
+                  <>
+                    {employee.emailId}({employee.technology.name})
+                  </>
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
           <TableContainer>

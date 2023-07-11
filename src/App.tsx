@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import CommonDashboard from "./Components/CommonDashboard";
 import UpdateManager from "./Components/UpdateManager";
 import AddQuiz from "./Components/AddQuiz";
+import EmployeeDashboard from "./Components/EmployeeDashboard";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         />
         <Route path="/admin-dashboard/add-quiz" element={<AddQuiz />} />
         <Route path="/manager-dashboard" element={<ManagerDashboard />} />
+        <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
       </Routes>
     </BrowserRouter>
   );
