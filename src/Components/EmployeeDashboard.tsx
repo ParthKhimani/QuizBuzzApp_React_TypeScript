@@ -6,8 +6,6 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import QuizIcon from "@mui/icons-material/Quiz";
-import { useSelector } from "react-redux";
-import { QuizState } from "../types";
 
 interface Option {
   id: number;
@@ -23,7 +21,6 @@ interface Question {
 
 const EmployeeDashboard = () => {
   const navigate = useNavigate();
-  const quizState = useSelector((state: { quiz: QuizState }) => state.quiz);
   const handleLogout = () => {
     navigate("/");
   };
@@ -46,4 +43,5 @@ const EmployeeDashboard = () => {
     </>
   );
 };
+
 export default EmployeeDashboard;

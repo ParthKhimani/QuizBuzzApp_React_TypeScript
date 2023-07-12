@@ -24,8 +24,6 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import QuizIcon from "@mui/icons-material/Quiz";
-import { useDispatch } from "react-redux";
-import { QuizState, QuizActionTypes } from "../types";
 
 interface Option {
   id: number;
@@ -35,7 +33,7 @@ interface Option {
 interface Question {
   id: number;
   question: string;
-  options: Option[];
+  options: { id: number; value: string }[];
   answer: string;
 }
 
@@ -63,9 +61,10 @@ interface Quiz {
 
 const AddQuiz: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [openSuccess, setOpenSuccess] = React.useState(false);
   const [openError, setOpenError] = React.useState(false);
+  const [quizOpenSuccess, setQuizOpenSuccess] = React.useState(false);
+  const [quizOpenError, setQuizOpenError] = React.useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState("");
   const [currentAnswer, setCurrentAnswer] = useState("");
@@ -156,15 +155,57 @@ const AddQuiz: React.FC = () => {
     setOpenError(false);
   };
 
+  const handleQuizCloseSuccess = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setQuizOpenSuccess(false);
+  };
+
+  const handleQuizCloseError = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setQuizOpenError(false);
+  };
+
   const handleAnswerSelection = (event: SelectChangeEvent) => {
     const answer = event.target.value;
     setCurrentAnswer(answer as string);
   };
 
   const handleSaveQuiz = () => {
-    setQuiz((prevQuiz) => [...prevQuiz, { questions, employee }]);
-    dispatch({ type: QuizActionTypes.ADD_QUIZ, payload: quiz });
+    if (questions.length === 0 || employee === "") {
+      setQuizOpenError(true);
+    } else {
+      setQuiz((prevQuiz) => [...prevQuiz, { questions, employee }]);
+      setQuizOpenSuccess(true);
+    }
   };
+
+  useEffect(() => {
+    if (quiz.length > 0) {
+      fetch("http://localhost:3333/add-quiz", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+        },
+        body: JSON.stringify({ questions, employee }),
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          if (result.status === "200") {
+            setQuizOpenSuccess(true);
+          }
+        });
+    }
+  }, [quiz]);
 
   const handleDeleteQuestion = (questionId: number) => {
     console.log(questionId);
@@ -180,7 +221,6 @@ const AddQuiz: React.FC = () => {
   };
 
   const handleClearQuiz = () => {
-    setQuiz([]);
     setQuestions([]);
     setEmployee("");
   };
@@ -397,6 +437,42 @@ const AddQuiz: React.FC = () => {
               Save Quiz
             </Button>
           </div>
+          <Snackbar
+            open={quizOpenSuccess}
+            autoHideDuration={2000}
+            onClose={handleQuizCloseSuccess}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+          >
+            <Alert
+              onClose={handleQuizCloseSuccess}
+              severity="success"
+              sx={{ width: "100%" }}
+              variant="filled"
+            >
+              Quiz Added Successfully !
+            </Alert>
+          </Snackbar>
+          <Snackbar
+            open={quizOpenError}
+            autoHideDuration={2000}
+            onClose={handleQuizCloseError}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+          >
+            <Alert
+              onClose={handleQuizCloseError}
+              severity="error"
+              sx={{ width: "100%" }}
+              variant="filled"
+            >
+              Error in adding Quiz !
+            </Alert>
+          </Snackbar>
         </Box>
       </div>
     </>
