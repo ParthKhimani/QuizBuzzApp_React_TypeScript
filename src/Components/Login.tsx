@@ -98,6 +98,10 @@ const Login: React.FC<LoginProps> = ({ role }) => {
             switch (result.status) {
               case "303":
                 navigate("/employee-dashboard");
+                localStorage.setItem(
+                  "employee",
+                  JSON.stringify(data.get("emailId"))
+                );
                 break;
 
               case "404":

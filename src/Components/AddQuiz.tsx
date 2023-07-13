@@ -185,7 +185,6 @@ const AddQuiz: React.FC = () => {
       setQuizOpenError(true);
     } else {
       setQuiz((prevQuiz) => [...prevQuiz, { questions, employee }]);
-      setQuizOpenSuccess(true);
     }
   };
 
