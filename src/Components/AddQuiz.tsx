@@ -63,8 +63,8 @@ const AddQuiz: React.FC = () => {
   const navigate = useNavigate();
   const [openSuccess, setOpenSuccess] = React.useState(false);
   const [openError, setOpenError] = React.useState(false);
-  const [quizOpenSuccess, setQuizOpenSuccess] = React.useState(false);
   const [quizOpenError, setQuizOpenError] = React.useState(false);
+  const [emailOpenSuccess, setEmailOpenSuccess] = React.useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState("");
   const [currentAnswer, setCurrentAnswer] = useState("");
@@ -155,16 +155,6 @@ const AddQuiz: React.FC = () => {
     setOpenError(false);
   };
 
-  const handleQuizCloseSuccess = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setQuizOpenSuccess(false);
-  };
-
   const handleQuizCloseError = (
     event?: React.SyntheticEvent | Event,
     reason?: string
@@ -173,6 +163,16 @@ const AddQuiz: React.FC = () => {
       return;
     }
     setQuizOpenError(false);
+  };
+
+  const handleEmailCloseSuccess = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setEmailOpenSuccess(false);
   };
 
   const handleAnswerSelection = (event: SelectChangeEvent) => {
@@ -199,8 +199,10 @@ const AddQuiz: React.FC = () => {
       })
         .then((response) => response.json())
         .then((result) => {
-          if (result.status === "200") {
-            setQuizOpenSuccess(true);
+          switch (result.status) {
+            case "202":
+              setEmailOpenSuccess(true);
+              break;
           }
         });
     }
@@ -437,24 +439,6 @@ const AddQuiz: React.FC = () => {
             </Button>
           </div>
           <Snackbar
-            open={quizOpenSuccess}
-            autoHideDuration={2000}
-            onClose={handleQuizCloseSuccess}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-          >
-            <Alert
-              onClose={handleQuizCloseSuccess}
-              severity="success"
-              sx={{ width: "100%" }}
-              variant="filled"
-            >
-              Quiz Added Successfully !
-            </Alert>
-          </Snackbar>
-          <Snackbar
             open={quizOpenError}
             autoHideDuration={2000}
             onClose={handleQuizCloseError}
@@ -470,6 +454,24 @@ const AddQuiz: React.FC = () => {
               variant="filled"
             >
               Error in adding Quiz !
+            </Alert>
+          </Snackbar>
+          <Snackbar
+            open={emailOpenSuccess}
+            autoHideDuration={2000}
+            onClose={handleEmailCloseSuccess}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+          >
+            <Alert
+              onClose={handleEmailCloseSuccess}
+              severity="success"
+              sx={{ width: "100%" }}
+              variant="filled"
+            >
+              Quiz Alert sent to Candidate !
             </Alert>
           </Snackbar>
         </Box>

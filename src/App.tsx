@@ -8,6 +8,7 @@ import CommonDashboard from "./Components/CommonDashboard";
 import UpdateManager from "./Components/UpdateManager";
 import AddQuiz from "./Components/AddQuiz";
 import EmployeeDashboard from "./Components/EmployeeDashboard";
+import QuizPage from "./Components/QuizPage";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/admin-dashboard/add-quiz" element={<AddQuiz />} />
         <Route path="/manager-dashboard" element={<ManagerDashboard />} />
         <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
+        <Route path="/employee-dashboard/quiz-page" element={<QuizPage />} />
       </Routes>
     </BrowserRouter>
   );
