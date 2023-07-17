@@ -31,12 +31,17 @@ interface Quiz {
   };
 }
 
+interface Quizes {
+  quiz: Quiz;
+  score: number;
+}
+
 const EmployeeDashboard = () => {
   const navigate = useNavigate();
   const employee = localStorage.getItem("employee");
   const [quizCount, setQuizCount] = useState<number>(0);
   const [technology, setTechnology] = useState<string>();
-  const [quizes, setQuizes] = useState<Quiz[]>([]);
+  const [quizes, setQuizes] = useState<Quizes[]>([]);
 
   useEffect(() => {
     fetch("http://localhost:3333/get-quiz", {
@@ -49,7 +54,7 @@ const EmployeeDashboard = () => {
       .then((response) => response.json())
       .then((result) => {
         setQuizes(result.quiz.quizes);
-        setQuizCount(result.quiz.quizes.length);
+        setQuizCount(result.quiz.quizes!.length);
         setTechnology(result.quiz.technology.name);
       });
   }, []);
@@ -74,7 +79,7 @@ const EmployeeDashboard = () => {
           Quiz {count}
         </Typography>
         <Typography variant="h6" component="div">
-          {quizes[count - 1].questions.length} Questions
+          {quizes[count - 1].quiz.questions.length} Questions
         </Typography>
       </CardContent>
       <CardActions>

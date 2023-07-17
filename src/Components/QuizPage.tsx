@@ -25,9 +25,10 @@ interface Answer {
 }
 
 const QuizPage = () => {
-  const [answers, setAnswers] = useState<Answer[]>([]);
   const navigate = useNavigate();
+  const [answers, setAnswers] = useState<Answer[]>([]);
   const [questions, setQuestions] = useState([]);
+  const [error, setError] = useState("");
   const quizIndex = localStorage.getItem("quiz-index");
   const employee = localStorage.getItem("employee");
   const questionValue = questions.map((questionObject: Question) => ({
@@ -63,18 +64,52 @@ const QuizPage = () => {
     const existingAnswer = answers.find((answer) => answer.index === index + 1);
     if (existingAnswer) {
       const updatedAnswers = answers.map((answer) =>
-        answer.index === index + 1 ? { ...answer, selectedAnswer } : answer
+        answer.index === index + 1
+          ? { ...answer, answer: selectedAnswer }
+          : answer
       );
       setAnswers(updatedAnswers);
     } else {
-      setAnswers((prevAnswers) => [...prevAnswers, { index, selectedAnswer }]);
+      setAnswers((prevAnswers) => [
+        ...prevAnswers,
+        { index: index + 1, answer: selectedAnswer },
+      ]);
     }
-    console.log(index + 1, selectedAnswer);
+  };
+
+  const handleSubmit = () => {
+    if (answers.length === questions.length) {
+      console.log(answers);
+      navigate("/employee-dashboard");
+      fetch("http://localhost:3333/add-score", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+        },
+        body: JSON.stringify({
+          quizIndex: quizIndex,
+          answers: answers,
+          employee: JSON.parse(employee!),
+        }),
+      })
+        .then((response) => response.json())
+        .then((result) => console.log(result));
+    } else {
+      setError("*Please attempt all the questions!");
+    }
   };
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          position: "fixed",
+          top: 0,
+          width: "100%",
+          zIndex: 999,
+        }}
+      >
         <AppBar position="static">
           <Toolbar>
             <QuizIcon style={{ margin: "0px 10px" }} />
@@ -87,31 +122,48 @@ const QuizPage = () => {
           </Toolbar>
         </AppBar>
       </Box>
-      {questionValue.map((questionObj, index) => (
-        <>
-          <Typography variant="h6" component="div" color="#2196f3">
-            {index + 1}. {questionObj.question}
-          </Typography>
-          <FormControl>
-            <RadioGroup
-              aria-labelledby="demo-radio-buttons-group-label"
-              name="radio-buttons-group"
-              onChange={(event) => handleChange(event, index as number)}
-            >
-              {questionObj.options.map((option, optionIndex) => (
-                <>
-                  <FormControlLabel
-                    value={optionIndex + 1}
-                    control={<Radio color="success" />}
-                    label={option.value}
-                  />
-                </>
-              ))}
-            </RadioGroup>
-          </FormControl>
-          <hr />
-        </>
-      ))}
+      <Box sx={{ marginTop: "64px" }}>
+        {questionValue.map((questionObj, index) => (
+          <>
+            <Typography variant="h6" component="div" color="#2196f3">
+              {index + 1}. {questionObj.question}
+            </Typography>
+            <FormControl>
+              <RadioGroup
+                aria-labelledby="demo-radio-buttons-group-label"
+                name="radio-buttons-group"
+                onChange={(event) => handleChange(event, index as number)}
+              >
+                {questionObj.options.map((option, optionIndex) => (
+                  <>
+                    <FormControlLabel
+                      value={optionIndex + 1}
+                      control={<Radio color="success" />}
+                      label={option.value}
+                    />
+                  </>
+                ))}
+              </RadioGroup>
+            </FormControl>
+            <hr />
+          </>
+        ))}
+      </Box>
+      <span style={{ color: "red", display: "block", margin: "10px" }}>
+        {error}
+      </span>
+      <Button
+        type="submit"
+        variant="contained"
+        color="success"
+        style={{
+          width: "15%",
+          margin: "10px",
+        }}
+        onClick={handleSubmit}
+      >
+        Submit
+      </Button>
     </>
   );
 };
