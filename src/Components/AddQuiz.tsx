@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Alert,
   AppBar,
@@ -61,6 +61,9 @@ interface Quiz {
 
 const AddQuiz: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isAdmin = location.pathname === "/admin-dashboard/add-quiz";
+  const isManager = location.pathname === "/manager-dashboard/add-quiz";
   const [openSuccess, setOpenSuccess] = React.useState(false);
   const [openError, setOpenError] = React.useState(false);
   const [quizOpenError, setQuizOpenError] = React.useState(false);
@@ -234,15 +237,28 @@ const AddQuiz: React.FC = () => {
   return (
     <>
       <AppBar position="static">
-        <Toolbar>
-          <QuizIcon style={{ margin: "0px 10px" }} />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Welcome Admin
-          </Typography>
-          <Button color="inherit" onClick={handleLogout}>
-            sign out
-          </Button>
-        </Toolbar>
+        {isAdmin && (
+          <Toolbar>
+            <QuizIcon style={{ margin: "0px 10px" }} />
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Welcome Admin
+            </Typography>
+            <Button color="inherit" onClick={handleLogout}>
+              sign out
+            </Button>
+          </Toolbar>
+        )}
+        {isManager && (
+          <Toolbar>
+            <QuizIcon style={{ margin: "0px 10px" }} />
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Welcome Manager
+            </Typography>
+            <Button color="inherit" onClick={handleLogout}>
+              sign out
+            </Button>
+          </Toolbar>
+        )}
       </AppBar>
       <div style={{ display: "flex", margin: "10px" }}>
         <Box
@@ -338,7 +354,12 @@ const AddQuiz: React.FC = () => {
             type="submit"
             variant="outlined"
             onClick={() => {
-              navigate("/admin-dashboard");
+              if (isAdmin) {
+                navigate("/admin-dashboard");
+              }
+              if (isManager) {
+                navigate("/manager-dashboard");
+              }
             }}
           >
             Go to Dashboard

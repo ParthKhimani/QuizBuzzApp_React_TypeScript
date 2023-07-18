@@ -10,7 +10,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { AppBar, Toolbar } from "@mui/material";
 import QuizIcon from "@mui/icons-material/Quiz";
 
@@ -21,6 +21,9 @@ const AddEmployee = () => {
   const [technology, setTechnology] = React.useState("");
   const [error, setError] = React.useState<string>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isAdmin = location.pathname === "/admin-dashboard/add-employee";
+  const isManager = location.pathname === "/manager-dashboard/add-employee";
 
   const handleLogout = () => {
     navigate("/");
@@ -49,7 +52,12 @@ const AddEmployee = () => {
           setError("");
           switch (result.status) {
             case "200":
-              navigate("/admin-dashboard");
+              if (isAdmin) {
+                navigate("/admin-dashboard");
+              }
+              if (isManager) {
+                navigate("/manager-dashboard");
+              }
               break;
             case "400":
               setError("Employee is already assigned to another technology !");
@@ -66,15 +74,28 @@ const AddEmployee = () => {
   return (
     <>
       <AppBar position="static">
-        <Toolbar>
-          <QuizIcon style={{ margin: "0px 10px" }} />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Welcome Admin
-          </Typography>
-          <Button color="inherit" onClick={handleLogout}>
-            sign out
-          </Button>
-        </Toolbar>
+        {isAdmin && (
+          <Toolbar>
+            <QuizIcon style={{ margin: "0px 10px" }} />
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Welcome Admin
+            </Typography>
+            <Button color="inherit" onClick={handleLogout}>
+              sign out
+            </Button>
+          </Toolbar>
+        )}
+        {isManager && (
+          <Toolbar>
+            <QuizIcon style={{ margin: "0px 10px" }} />
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Welcome Manager
+            </Typography>
+            <Button color="inherit" onClick={handleLogout}>
+              sign out
+            </Button>
+          </Toolbar>
+        )}
       </AppBar>
       <ThemeProvider theme={defaultTheme}>
         <Container component="main" maxWidth="xs">

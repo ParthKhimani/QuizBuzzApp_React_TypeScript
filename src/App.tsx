@@ -19,10 +19,15 @@ function App() {
         <Route path="/admin-dashboard/add-manager" element={<AddManager />} />
         <Route path="/admin-dashboard/add-employee" element={<AddEmployee />} />
         <Route
+          path="/manager-dashboard/add-employee"
+          element={<AddEmployee />}
+        />
+        <Route
           path="/admin-dashboard/update-manager"
           element={<UpdateManager />}
         />
         <Route path="/admin-dashboard/add-quiz" element={<AddQuiz />} />
+        <Route path="/manager-dashboard/add-quiz" element={<AddQuiz />} />
         <Route path="/manager-dashboard" element={<ManagerDashboard />} />
         <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
         <Route path="/employee-dashboard/quiz-page" element={<QuizPage />} />

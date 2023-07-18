@@ -13,7 +13,7 @@ import Login from "./Login";
 
 const CommonDashboard = () => {
   const navigate = useNavigate();
-  const [value, setValue] = React.useState("1");
+  const [value, setValue] = React.useState("admin");
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);

@@ -34,6 +34,7 @@ interface Quiz {
 interface Quizes {
   quiz: Quiz;
   score: number;
+  attempted: boolean;
 }
 
 const EmployeeDashboard = () => {
@@ -69,23 +70,39 @@ const EmployeeDashboard = () => {
     navigate("quiz-page");
   };
 
-  const cardContent = (count: number) => (
+  const cardContent = (count: number, attempt: boolean) => (
     <>
       <CardContent>
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+        <Typography sx={{ fontSize: 14, textAlign: "center" }} gutterBottom>
           {technology}
         </Typography>
-        <Typography variant="h5" component="div">
+        <hr />
+        <Typography sx={{ textAlign: "center" }} variant="h5" component="div">
           Quiz {count}
         </Typography>
-        <Typography variant="h6" component="div">
+        <Typography sx={{ textAlign: "center" }} variant="h6" component="div">
           {quizes[count - 1].quiz.questions.length} Questions
         </Typography>
       </CardContent>
+      <hr />
       <CardActions>
-        <Button size="medium" onClick={handleStartQuiz} value={count}>
-          Start Quiz
-        </Button>
+        {!attempt && (
+          <Button
+            sx={{
+              width: "100%",
+            }}
+            size="medium"
+            onClick={handleStartQuiz}
+            value={count}
+          >
+            Start Quiz
+          </Button>
+        )}
+        {attempt && (
+          <Typography style={{ margin: "5px", width: "100%" }}>
+            Quiz Submitted
+          </Typography>
+        )}
       </CardActions>
     </>
   );
@@ -94,14 +111,17 @@ const EmployeeDashboard = () => {
     const cards = [];
 
     for (let i = 1; i <= quizCount; i++) {
+      const attempt = quizes[i - 1].attempted;
+      const backgroundColor = attempt ? "green" : "default";
+      const color = attempt ? "white" : "default";
       cards.push(
         <Card
           key={i}
           variant="outlined"
-          sx={{ boxShadow: 8 }}
+          sx={{ boxShadow: 8, backgroundColor: backgroundColor, color: color }}
           style={{ margin: "15px", borderRadius: "10px" }}
         >
-          {cardContent(i)}
+          {cardContent(i, attempt)}
         </Card>
       );
     }
