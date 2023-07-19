@@ -66,6 +66,12 @@ const ManagerDashboard = () => {
       });
   };
 
+  const handleUpdateEmployee = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const data = event.currentTarget.getAttribute("value");
+    navigate("/manager-dashboard/update-employee", {
+      state: { employeeData: data },
+    });
+  };
   const handleDeleteEmployee = (event: React.MouseEvent<HTMLButtonElement>) => {
     const data = event.currentTarget.getAttribute("value");
     fetch("http://localhost:3333/admin-dashboard/delete-employee-data", {
@@ -157,7 +163,7 @@ const ManagerDashboard = () => {
                     variant="outlined"
                     color="success"
                     style={{ marginRight: "10px" }}
-                    // onClick={handleUpdateEmployee}
+                    onClick={handleUpdateEmployee}
                     value={JSON.stringify(item)}
                   >
                     Update

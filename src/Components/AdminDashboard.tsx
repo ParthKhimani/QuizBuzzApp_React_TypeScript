@@ -124,6 +124,13 @@ const AdminDashboard = () => {
     });
   };
 
+  const handleUpdateEmployee = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const data = event.currentTarget.getAttribute("value");
+    navigate("/admin-dashboard/update-employee", {
+      state: { employeeData: data },
+    });
+  };
+
   React.useEffect(() => {
     fetchData();
     fetchData2();
@@ -263,7 +270,7 @@ const AdminDashboard = () => {
                     variant="outlined"
                     color="success"
                     style={{ marginRight: "10px" }}
-                    // onClick={handleUpdateEmployee}
+                    onClick={handleUpdateEmployee}
                     value={JSON.stringify(item)}
                   >
                     Update

@@ -9,6 +9,7 @@ import UpdateManager from "./Components/UpdateManager";
 import AddQuiz from "./Components/AddQuiz";
 import EmployeeDashboard from "./Components/EmployeeDashboard";
 import QuizPage from "./Components/QuizPage";
+import UpdateEmployee from "./Components/UpdateEmployee";
 
 function App() {
   return (
@@ -25,6 +26,14 @@ function App() {
         <Route
           path="/admin-dashboard/update-manager"
           element={<UpdateManager />}
+        />
+        <Route
+          path="/admin-dashboard/update-employee"
+          element={<UpdateEmployee />}
+        />
+        <Route
+          path="/manager-dashboard/update-employee"
+          element={<UpdateEmployee />}
         />
         <Route path="/admin-dashboard/add-quiz" element={<AddQuiz />} />
         <Route path="/manager-dashboard/add-quiz" element={<AddQuiz />} />

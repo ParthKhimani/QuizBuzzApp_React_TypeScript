@@ -21,7 +21,6 @@ const UpdateManager = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { managerData } = location.state;
-  console.log(managerData);
 
   const handleChange = (event: SelectChangeEvent) => {
     setTechnology(event.target.value as string);
@@ -34,10 +33,35 @@ const UpdateManager = () => {
   };
 
   React.useEffect(() => {
-    if (managerData && managerData.technology) {
-      setTechnology(managerData.technology.name);
+    if (managerData) {
+      setTechnology(JSON.parse(managerData).technology.name);
     }
-  }, [managerData]);
+  }, []);
+
+  React.useEffect(() => {
+    if (data) {
+      fetch("http://localhost:3333/update-manager", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+        },
+        body: JSON.stringify(Object.fromEntries(data)),
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          setError("");
+          switch (result.status) {
+            case "200":
+              navigate("/admin-dashboard");
+              break;
+
+            case "202":
+              navigate("/admin-dashboard");
+              break;
+          }
+        });
+    }
+  }, [data]);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -68,7 +92,8 @@ const UpdateManager = () => {
               label="Manager Email Id"
               name="manager"
               autoFocus
-              defaultValue={managerData ? managerData.emailId : ""}
+              defaultValue={managerData ? JSON.parse(managerData).emailId : ""}
+              InputProps={{ readOnly: true }}
             />
             <TextField
               margin="normal"
@@ -78,6 +103,7 @@ const UpdateManager = () => {
               label="Assign Password"
               name="password"
               autoFocus
+              defaultValue={managerData ? JSON.parse(managerData).password : ""}
             />
 
             <FormControl fullWidth>

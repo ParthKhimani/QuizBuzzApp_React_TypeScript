@@ -159,10 +159,10 @@ const Login: React.FC<LoginProps> = ({ role }) => {
               autoComplete="current-password"
             />
             <div style={{ color: "red" }}>{error}</div>
-            <FormControlLabel
+            {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
-            />
+            /> */}
             <Button
               type="submit"
               fullWidth
@@ -171,13 +171,13 @@ const Login: React.FC<LoginProps> = ({ role }) => {
             >
               Sign In
             </Button>
-            <Grid container>
+            {/* <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
                   Forgot password?
                 </Link>
               </Grid>
-            </Grid>
+            </Grid> */}
           </Box>
         </Box>
       </Container>
